@@ -13,24 +13,31 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
-Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
 Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 call plug#end()
 
 let g:deoplete#enable_at_startup = 1
 let g:vimtex_view_general_viewer = 'okular'
+let g:indent_blankline_use_treesitter = v:true
 
 set number
 set tabstop=4
 set shiftwidth=4
 set expandtab
 
-imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<C-n>'
-smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<C-n>'
-imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-p>'
-smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-p>'
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
 lua <<EOF
+
+  -- nvim-cmp
+
   -- Set up nvim-cmp.
   local cmp = require'cmp'
 
@@ -87,15 +94,72 @@ lua <<EOF
   })
 
   -- Set up lspconfig.
+  require("mason").setup()
+  require("mason-lspconfig").setup()
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   require'lspconfig'.pylsp.setup{}
   require'lspconfig'.texlab.setup{}
-  require'lspconfig'.ltex.setup{}
+  require'lspconfig'.ltex.setup{
+    settings = {
+        ltex = {
+            lang = {"en-GB"}
+        }
+        }
+  }
+  require'lspconfig'.grammarly.setup{}
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
- capabilities.textDocument.completion.completionItem.snippetSupport = true
- 
- require'lspconfig'.html.setup {
-   capabilities = capabilities,
- }
+  capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+  require'nvim-treesitter.configs'.setup {
+    ensure_installed = { "latex", "python" },
+    sync_install = false,
+    highlight = {
+        enable = true,
+        disable = { "latex" },
+        additional_vim_regex_highlighting = { "latex" },
+    },
+  }
+  require'nvim-treesitter.configs'.setup {
+    textobjects = {
+      select = {
+        enable = true,
+        lookahead = true,
+  
+        keymaps = {
+          ["af"] = "@function.outer",
+          ["if"] = "@function.inner",
+          ["ac"] = "@class.outer",
+          ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+          ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+        },
+
+        selection_modes = {
+          ['@parameter.outer'] = 'v', -- charwise
+          ['@function.outer'] = 'V', -- linewise
+          ['@class.outer'] = '<c-v>', -- blockwise
+        },
+      },
+      move = {
+        enable = true,
+        set_jumps = true,
+        goto_next_start = {
+          ["]m"] = "@function.outer",
+          ["]]"] = { query = "@class.outer", desc = "Next class start" }
+        },
+        goto_next_end = {
+          ["]M"] = "@function.outer",
+          ["]]"] = "@class.outer"
+        },
+        goto_previous_start = {
+          ["[m"] = "@function.outer",
+          ["[["] = "@class.outer"
+        },
+        goto_previous_end = {
+          ["[M"] = "@function.outer",
+          ["[]"] = "@class.outer"
+        }
+      },
+    },
+  }
 EOF
