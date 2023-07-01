@@ -1,0 +1,75 @@
+\documentclass[12pt]{article}
+\usepackage{../../template}
+\title{Velocity Profiles}
+\author{niceguy}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Here I'll derive the equations (with steps) for velocity profiles under different conditions. You can sketch them out in the Jupyter Notebook. Unless if specified, assume steady laminar flow, incompressibility, and uniform shear stress along the pipe. Nothing but basic physics and calculus is required.
+
+% Reynolds Transport Theorem: mass and momentum examples
+% Momentum Correction Factor?
+% discussion of forces
+
+\section{Circular Pipe}
+
+This is the classic example. We use $s$ to denote the path traced by the pipe along the centre of the circle. We can then consider the infinitesimal control volume $\pi r^2ds$, which is the cylindrical segment with height $ds$. \\
+
+Since the area of inflow is identical to that of outflow, for mass to be conserved, average velocity in $u_{\text{in}}$ must be equal to average velocity out $u_{\text{out}}$. Then consider the balance of forces along $s$.
+
+\begin{align*}
+    \sum F_s &= \rho \int_A \left(u_{\text{in}}^2 - u_{\text{out}}^2\right) dA \\
+             &= \rho K_m \int_A \left(\overline{u_{\text{in}}}^2 - \overline{u_{\text{out}}}^2\right) dA \\
+             &= 0
+\end{align*}
+
+Note that the momentum correction factor $K_m$ is constant. Hence, there is no net force along $s$. Note that net force is composed of pressure, shear stress, and gravity. Letting $\theta$ be the angle between the horizontal plane and $s$,
+
+\begin{align*}
+    pr^2\pi &= (p+dp)r^2\pi + 2\pi rds\tau + \rho gr^2\pi ds\sin\theta \\
+    rdp + 2\tau ds + \rho g rds\sin\theta &= 0 \\
+\end{align*}
+
+Dividing by $ds$ and substituting $\sin\theta = \frac{dz}{ds}$,
+
+\begin{equation}
+    \frac{dp}{ds} + \frac{2\tau}{r} + \rho g \frac{dz}{ds} = 0
+\end{equation}
+
+\subsection{Fully Developed Flow}
+
+The above equation holds in a developing flow region, where fluid first enters a pipe, and velocity profile changes with $s$. For developed flow, we can simplify the equation. Consider a cylindrical shell control volume with volume $2\pi rdrds$. Similarly, forces along $s$ vanishes. Due to the no-slip condition, we can assume velocity \textit{decreases} with $r$, which gives us the direction of shear forces.
+
+\begin{align*}
+    2\pi rpdr + 2\pi r\tau ds &= 2\pi r(p + dp)dr + 2\pi (r\tau + d(r\tau)) ds + 2\pi r\rho g drds \frac{dz}{ds} \\
+    2\pi rdpdr + 2\pi d(r\tau)ds + 2\pi r\rho g drds \frac{dz}{ds} &= 0 \\
+    r \frac{dp}{ds} + \frac{d}{dr} r\tau + r\rho g \frac{dz}{ds} &= 0
+\end{align*}
+
+Again, $p$ and $z$ do not depend on $r$. Integration with respect to $r$,
+
+$$\frac{r^2}{2} \frac{dp}{ds} + r\tau + \frac{r^2}{2} \rho g \frac{dz}{ds} = C$$
+
+Putting $r=0$, the constant $C=0$. Substituting the definition of $\tau$,
+
+$$\frac{r^2}{2} \frac{dp}{ds} - r\mu \frac{du}{dr} + \frac{r^2}{2} \rho g \frac{dz}{ds} = 0$$
+
+Dividing by $r\mu$ and integrating,
+
+$$u = \frac{r^2}{4\mu} \frac{dp}{ds} + \frac{r^2}{4\mu} \rho g \frac{dz}{ds} + C$$
+
+To solve for the constant, simply use the no-slip condition $u(r=R) = 0$
+
+\begin{equation}
+    u = \frac{r^2-R^2}{4\mu} \left(\frac{dp}{ds} + \rho g \frac{dz}{ds}\right)
+\end{equation}
+
+Observe that for flow to be fully developed, we assume $\frac{dz}{ds}, \frac{dp}{ds}$ are constants. Then the maximum is obviously at $u_{\text{max}} = u(r=0)$, so the shape is given by
+
+$$\frac{u}{u_{\text{max}}} = 1 - \left(\frac{r}{R}\right)^2$$
+
+Hence velocity profile does not depend on slope.
+
+\end{document}
