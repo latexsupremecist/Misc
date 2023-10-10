@@ -9,7 +9,20 @@
 
 Here I'll derive the equations (with steps) for velocity profiles under different conditions. You can sketch them out in the Jupyter Notebook. Unless if specified, assume steady laminar flow, incompressibility, and uniform shear stress along the pipe. Nothing but basic physics and calculus is required.
 
-% Reynolds Transport Theorem: mass and momentum examples
+\section{Some Background}
+
+\subsection{Reynolds Transport Theorem}
+
+Let $z$ be a property independent of mass, and define
+
+$$Z = \int_V \rho z dV$$
+
+For this subsection, we can assume $z$ refers to temperature, though it can refer to specific momentum and mass (where $Z$ becomes momentum and mass respectively). Now let us define $Z$ to be the sum of all $z$ in some volume of the fluid. For convenience, you can imagine a dyed segment of fluid. We also define a control volume $V$ with inlet area $A_{\text{in}}$ and outlet area $A_{\text{out}}$. The control volume is constant with time, but the fluid travels, meaning some dyed fluid exits the control volume, and some undyed fluid enters. Assuming no flow, the change in $Z$ of the fluid is equal to the change in $Z$ in the control volume. If there is fluid outflow, we should \emph{add} the amount of $Z$ that leaves to the change in the control volume. Assuming no change in temperature, for example, but with fluid flowing out, wee need to add the amount of temperature-mass that leaves to the change in control volume to get the desired result (0). Similarly, you subtract inflow of $Z$, as it is included in the change of $Z$ within the control volume, but it is not part of the fluid we are concerned with. Then
+
+$$\frac{dZ}{dt} = \del{}{t} \int_V \rho z dV - \int_{A_{\text{in}}} \rho zvdA_{\text{in}} + \int_{A_{\text{out}}} \rho zvdA_{\text{out}}$$
+
+where $vdA$, or more explicitly $\vec v d\vec A$, is the volume flow rate (volume per time) of fluid flow. Multiplying it by $\rho$ gives the mass flow rate.
+
 % Momentum Correction Factor?
 % discussion of forces
 
@@ -72,4 +85,21 @@ $$\frac{u}{u_{\text{max}}} = 1 - \left(\frac{r}{R}\right)^2$$
 
 Hence velocity profile does not depend on slope.
 
+\section{Parallel Planes}
+
+Assume the top plane has a velocity $U>0$, while the bottom plane is stationary. Let $D$ be the spacing between the planes. Velocity then increases with height $y$. We use an infinitesimal element with width $dx$ and height $dy$. Similarly, for mass to be conserved, $u_{\text{in}} = u_{\text{out}}$, implying there is no momentum flux, or no net force. Defining $m$ to be the (constant) slope,
+
+\begin{align*}
+    pdy + (\tau + d\tau)dx &= (p+dp)dy + \tau dx + \rho gm dxdy \\
+    d\tau dx &= dpdy + \rho gm dxdy \\
+    \frac{d\tau}{dy} &= \frac{dp}{dx} + \rho gm \\
+    \mu \frac{d^2u}{dy^2} &= \frac{dp}{dx} + \rho gm \\
+    u &= \frac{y^2}{2}\left(\frac{dp}{dx} + \rho gm\right) + Ay + B
+\end{align*}
+
+Where again $\frac{dp}{dx}$ is independent of $y$ for the same reasons. Substituting the initial conditions $u(0) = 0, u(D) = U$, we obtain
+
+\begin{equation}
+    u = \frac{1}{2\mu} \left(\frac{dp}{dx} + \rho gm\right) y^2 + \left(\frac{U}{D} - \frac{D}{2\mu} \left(\frac{dp}{dx} + \rho gm\right) \right) y
+\end{equation}
 \end{document}

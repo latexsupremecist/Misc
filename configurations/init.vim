@@ -18,6 +18,7 @@ Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'nvim-treesitter/nvim-treesitter-refactor'
 call plug#end()
 
 let g:deoplete#enable_at_startup = 1
@@ -99,6 +100,7 @@ lua <<EOF
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   require'lspconfig'.pylsp.setup{}
   require'lspconfig'.texlab.setup{}
+  require'lspconfig'.clangd.setup{}
   require'lspconfig'.ltex.setup{
     settings = {
         ltex = {
@@ -112,7 +114,7 @@ lua <<EOF
   capabilities.textDocument.completion.completionItem.snippetSupport = true
 
   require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "latex", "python" },
+    ensure_installed = { "latex", "python", "cpp" },
     sync_install = false,
     highlight = {
         enable = true,
@@ -144,22 +146,44 @@ lua <<EOF
         enable = true,
         set_jumps = true,
         goto_next_start = {
-          ["]m"] = "@function.outer",
+          ["]f"] = "@function.outer",
           ["]]"] = { query = "@class.outer", desc = "Next class start" }
         },
         goto_next_end = {
-          ["]M"] = "@function.outer",
+          ["]F"] = "@function.outer",
           ["]]"] = "@class.outer"
         },
         goto_previous_start = {
-          ["[m"] = "@function.outer",
+          ["[f"] = "@function.outer",
           ["[["] = "@class.outer"
         },
         goto_previous_end = {
-          ["[M"] = "@function.outer",
+          ["[F"] = "@function.outer",
           ["[]"] = "@class.outer"
         }
       },
+      swap = {
+      enable = true,
+      swap_next = {
+        ["<leader>a"] = "@parameter.inner",
+      },
+      swap_previous = {
+        ["<leader>A"] = "@parameter.inner",
+      },
+      },
     },
+    refactor = {
+    navigation = {
+      enable = true,
+      -- Assign keymaps to false to disable them, e.g. `goto_definition = false`.
+      keymaps = {
+        goto_definition = "gnd",
+        list_definitions = "gnD",
+        list_definitions_toc = "gO",
+        goto_next_usage = "gfn",
+        goto_previous_usage = "gfN",
+      },
+    },
+  },
   }
 EOF
