@@ -11,6 +11,8 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-vsnip'
+Plug 'kdheepak/cmp-latex-symbols'
+
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
@@ -20,7 +22,6 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
 call plug#end()
-
 let g:deoplete#enable_at_startup = 1
 let g:vimtex_view_general_viewer = 'okular'
 let g:indent_blankline_use_treesitter = v:true
@@ -64,6 +65,7 @@ lua <<EOF
       { name = 'vsnip' },
     }, {
       { name = 'buffer' },
+      {name = 'latex_symbols', option = { strategy = 0 } },
     })
   })
 
@@ -186,4 +188,5 @@ lua <<EOF
     },
   },
   }
+  require'lspconfig'.julials.setup{}
 EOF
